@@ -1,4 +1,4 @@
-class Product():
+class Product:
     name: str
     description: str
     price: float
@@ -11,7 +11,7 @@ class Product():
         self.quantity = quantity
 
 
-class Category():
+class Category:
     name: str
     description: str
     products: list
