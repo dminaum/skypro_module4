@@ -13,7 +13,11 @@ class Product:
     @classmethod
     def new_product(cls, product_dict: dict):
         name, description, price, quantity = (
-            product_dict['name'], product_dict['description'], product_dict['price'], product_dict['quantity'])
+            product_dict["name"],
+            product_dict["description"],
+            product_dict["price"],
+            product_dict["quantity"],
+        )
         return cls(name, description, price, quantity)
 
     @property
@@ -25,7 +29,7 @@ class Product:
         if new_price > 0:
             self.__price = new_price
         else:
-            print('Цена не должна быть нулевая или отрицательная')
+            print("Цена не должна быть нулевая или отрицательная")
 
 
 class Category:
@@ -44,6 +48,8 @@ class Category:
         Category.total_products += len(products)
 
     def add_product(self, product):
+        if not isinstance(product, Product):
+            raise TypeError("Ожидается объект класса Product")
         self.__products.append(product)
         Category.total_products += 1
 
