@@ -115,7 +115,9 @@ def test_product_add_invalid():
     """Проверка исключения при сложении с объектом другого типа"""
     product = Product("Товар A", "Описание A", 100, 10)
 
-    with pytest.raises(TypeError, match="Складывать можно только объекты класса Product"):
+    with pytest.raises(
+        TypeError, match="Складывать можно только объекты класса Product"
+    ):
         product + "не продукт"
 
 
@@ -133,11 +135,10 @@ def test_category_str():
 
     assert str(category) == "Гаджеты, количество продуктов: 0 шт."
 
-    # Добавляем продукты и проверяем, что счетчик обновляется
     product1 = Product("Ноутбук", "Игровой ноутбук", 1200, 5)
     product2 = Product("Смартфон", "Флагманский смартфон", 800, 3)
 
     category.add_product(product1)
     category.add_product(product2)
 
-    assert str(category) == "Гаджеты, количество продуктов: 2 шт."
+    assert str(category) == "Гаджеты, количество продуктов: 8 шт."
