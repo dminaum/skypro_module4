@@ -101,3 +101,43 @@ def test_category_total_products():
     )
 
     assert Category.total_products == initial_products + 2
+
+
+def test_product_add():
+    """Проверка сложения двух продуктов"""
+    product1 = Product("Товар A", "Описание A", 100, 10)
+    product2 = Product("Товар B", "Описание B", 200, 2)
+
+    assert product1 + product2 == 1400  # 100 * 10 + 200 * 2 = 1400
+
+
+def test_product_add_invalid():
+    """Проверка исключения при сложении с объектом другого типа"""
+    product = Product("Товар A", "Описание A", 100, 10)
+
+    with pytest.raises(TypeError, match="Складывать можно только объекты класса Product"):
+        product + "не продукт"
+
+
+def test_product_str():
+    """Проверка строкового представления продукта"""
+    product = Product("Товар A", "Описание A", 100, 10)
+
+    assert str(product) == "Товар A, 100 руб. Остаток: 10 шт."
+
+
+def test_category_str():
+    """Проверка строкового представления категории"""
+    Category.total_products = 0
+    category = Category("Гаджеты", "Электроприборы и техника", [])
+
+    assert str(category) == "Гаджеты, количество продуктов: 0 шт."
+
+    # Добавляем продукты и проверяем, что счетчик обновляется
+    product1 = Product("Ноутбук", "Игровой ноутбук", 1200, 5)
+    product2 = Product("Смартфон", "Флагманский смартфон", 800, 3)
+
+    category.add_product(product1)
+    category.add_product(product2)
+
+    assert str(category) == "Гаджеты, количество продуктов: 2 шт."
