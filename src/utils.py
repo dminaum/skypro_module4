@@ -16,6 +16,8 @@ class Product:
     def __add__(self, other):
         if not isinstance(other, Product):
             raise TypeError("Складывать можно только объекты класса Product")
+        if type(self) is not type(other):
+            raise TypeError("Складывать можно только продукты одного типа")
         return self.price * self.quantity + other.price * other.quantity
 
     @classmethod
@@ -61,7 +63,9 @@ class Category:
 
     def add_product(self, product):
         if not isinstance(product, Product):
-            raise TypeError("Ожидается объект класса Product")
+            raise TypeError(
+                "Можно добавлять только объекты класса Product или его подклассов"
+            )
         self.__products.append(product)
         Category.total_products += 1
 
@@ -69,5 +73,47 @@ class Category:
     def products(self):
         products_info = ""
         for product in self.__products:
-            products_info += f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт.\n"
+            products_info += f"{product}\n"
         return products_info
+
+
+class Smartphone(Product):
+    efficiency: str
+    model: str
+    memory: str
+    color: str
+
+    def __init__(
+        self, name, description, price, quantity, efficiency, model, memory, color
+    ):
+        super().__init__(name, description, price, quantity)
+        self.efficiency = efficiency
+        self.model = model
+        self.memory = memory
+        self.color = color
+
+    def __str__(self):
+        return (
+            f"{self.name} ({self.model}, {self.memory},"
+            f"{self.color}) - {self.price} руб. Остаток: {self.quantity} шт."
+        )
+
+
+class LawnGrass(Product):
+    country: str
+    germination_period: str
+    color: str
+
+    def __init__(
+        self, name, description, price, quantity, country, germination_period, color
+    ):
+        super().__init__(name, description, price, quantity)
+        self.country = country
+        self.germination_period = germination_period
+        self.color = color
+
+    def __str__(self):
+        return (
+            f"{self.name} ({self.country}, {self.germination_period},"
+            f"{self.color}) - {self.price} руб. Остаток: {self.quantity} шт."
+        )
