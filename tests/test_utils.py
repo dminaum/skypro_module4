@@ -1,6 +1,6 @@
 import pytest
 
-from src.utils import Category, Product
+from src.utils import Category, LawnGrass, Product, Smartphone
 
 
 def test_product_initialization():
@@ -82,7 +82,10 @@ def test_add_invalid_product():
         name="Гаджеты", description="Электроприборы и техника", products=[]
     )
 
-    with pytest.raises(TypeError, match="Ожидается объект класса Product"):
+    with pytest.raises(
+        TypeError,
+        match="Можно добавлять только объекты класса Product или его подклассов",
+    ):
         category.add_product("не продукт")  # Ошибка, не объект Product
 
 
@@ -142,3 +145,48 @@ def test_category_str():
     category.add_product(product2)
 
     assert str(category) == "Гаджеты, количество продуктов: 8 шт."
+
+
+def test_add_different_product_types():
+    """Проверка ошибки при сложении продуктов разных подклассов"""
+    smartphone = Smartphone(
+        "iPhone", "Смартфон", 1000, 2, "высокая", "14 Pro", "128GB", "черный"
+    )
+    grass = LawnGrass("Газон", "Трава", 100, 5, "Россия", "14 дней", "зелёный")
+
+    with pytest.raises(TypeError, match="Складывать можно только продукты одного типа"):
+        smartphone + grass
+
+
+def test_add_same_subclass_products():
+    """Проверка корректного сложения продуктов одного подкласса"""
+    phone1 = Smartphone("Galaxy", "Смартфон", 500, 3, "высокая", "S21", "64GB", "белый")
+    phone2 = Smartphone(
+        "Galaxy", "Смартфон", 1000, 1, "высокая", "S22", "128GB", "чёрный"
+    )
+
+    assert phone1 + phone2 == 2500  # 500 * 3 + 1000 * 1
+
+
+def test_add_product_only_product_or_subclasses():
+    """Проверка, что добавить можно только Product или его наследников"""
+    category = Category("Разное", "Сборная солянка", [])
+
+    product = Product("Книга", "Учебник", 300, 5)
+    smartphone = Smartphone(
+        "Pixel", "Смартфон", 600, 3, "средняя", "6a", "128GB", "зелёный"
+    )
+
+    # Эти два должны добавиться без ошибок
+    category.add_product(product)
+    category.add_product(smartphone)
+
+    # Попытка добавить неподходящий тип
+    class NotAProduct:
+        pass
+
+    with pytest.raises(
+        TypeError,
+        match="Можно добавлять только объекты класса Product или его подклассов",
+    ):
+        category.add_product(NotAProduct())
