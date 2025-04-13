@@ -1,10 +1,44 @@
-class Product:
+from abc import ABC, abstractmethod
+
+
+class BaseProduct(ABC):
+    @abstractmethod
+    def __str__(self):
+        """Возвращает строку с описанием продукта"""
+
+    def __add__(self, other):
+        """Складывает продукты одного типа"""
+
+    @property
+    @abstractmethod
+    def price(self):
+        """Позволяет узнать цену продукта"""
+
+    @price.setter
+    @abstractmethod
+    def price(self, new_price):
+        """Позволяет устанавливать новую цену на продукт. Она должна быть больше 0"""
+
+
+class LoggerMixin:
+    def __init__(self, *args, **kwargs):
+        print(
+            f"Создан объект класса {self.__class__.__name__} с аргументами: {args}, {kwargs}"
+        )
+        super().__init__(*args, **kwargs)
+
+    def __repr__(self):
+        return f"<{self.__class__.__name__}({self.name}, {self.description}, {self.price}, {self.quantity})>"
+
+
+class Product(LoggerMixin, BaseProduct):
     name: str
     description: str
     __price: float
     quantity: int
 
-    def __init__(self, name, description, price, quantity):
+    def __init__(self, name, description, price, quantity, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.name = name
         self.description = description
         self.__price = price

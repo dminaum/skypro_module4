@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 import pytest
 
 from src.utils import Category, LawnGrass, Product, Smartphone
@@ -190,3 +192,41 @@ def test_add_product_only_product_or_subclasses():
         match="Можно добавлять только объекты класса Product или его подклассов",
     ):
         category.add_product(NotAProduct())
+
+
+def test_repr():
+    """Проверка метода __repr__"""
+    product = Product("Телефон", "Смартфон", 1500.00, 5)
+    repr_output = repr(product)
+
+    # Проверка на корректность вывода
+    assert "Product" in repr_output
+    assert "Телефон" in repr_output
+    assert "1500.0" in repr_output
+
+
+def test_logger_mixin_print_called():
+    with patch("builtins.print") as mocked_print:
+        _ = Product("Телефон", "Смартфон", 1500.0, 10)
+        assert mocked_print.called, "print не был вызван при создании Product"
+
+
+def test_logger_mixin_print_contains_class_name():
+    with patch("builtins.print") as mocked_print:
+        _ = Product("Телефон", "Смартфон", 1500.0, 10)
+
+        # Получаем первый аргумент первого вызова print
+        printed_text = mocked_print.call_args[0][0]
+        assert "Product" in printed_text, "В выводе не найдено имя класса Product"
+
+
+def test_price_setter_valid_value():
+    """Проверка корректной работы setter для цены с положительными значениями"""
+    product = Product("Товар", "Описание", 100, 10)
+
+    # Проверка установки корректной цены
+    product.price = 2000.00  # Устанавливаем положительную цену
+    assert product.price == 2000.00  # Проверяем, что цена установлена правильно
+
+    product.price = 1500.50  # Устанавливаем другую цену
+    assert product.price == 1500.50  # Проверяем, что цена обновилась правильно
