@@ -230,3 +230,16 @@ def test_price_setter_valid_value():
 
     product.price = 1500.50  # Устанавливаем другую цену
     assert product.price == 1500.50  # Проверяем, что цена обновилась правильно
+
+def test_get_average_price():
+    """Проверка метода get_average_price"""
+    product1 = Product("Ноутбук", "Игровой ноутбук", 1200.00, 5)
+    product2 = Product("Мышь", "Беспроводная мышь", 50.00, 10)
+    category = Category(
+        name="Гаджеты",
+        description="Электроприборы и техника",
+        products=[product1, product2],
+    )
+
+    # Средняя цена (1200 + 50) / 2
+    assert category.get_average_price() == 625

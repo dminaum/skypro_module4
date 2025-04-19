@@ -38,6 +38,8 @@ class Product(LoggerMixin, BaseProduct):
     quantity: int
 
     def __init__(self, name, description, price, quantity, *args, **kwargs):
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
         super().__init__(*args, **kwargs)
         self.name = name
         self.description = description
@@ -110,6 +112,13 @@ class Category:
             products_info += f"{product}\n"
         return products_info
 
+    def get_average_price(self):
+        try:
+            total_price = sum(product.price for product in self.__products)
+            total_products = len(self.__products)
+            return total_price / total_products
+        except ZeroDivisionError:
+            return 0
 
 class Smartphone(Product):
     efficiency: str
